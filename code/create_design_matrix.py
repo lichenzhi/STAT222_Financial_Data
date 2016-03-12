@@ -12,6 +12,7 @@ def create_design_matrix():
     return (design_matrix)
 
 #if you want to check whether you can run the design matrix.
-#uncomment the following two lines
+#uncomment the following three lines
 #test = create_design_matrix()
 #print (test.loc[1,:])
+#print (test.shape)
