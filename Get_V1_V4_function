@@ -1,15 +1,11 @@
 import pandas as pd 
 import numpy as np
+from rename_column import *
+
 ###Function to create v1 and v4 
 def createV1V4():
-  ##Read the csv file into python 
-  data=pd.read_csv('LOB.csv')
-  np.shape(data)
-  #Rename the columns 
-  new_col = [element[16:-19] for element in list(data.columns.values)[2:]]
-  col_names = ['Index','Time']
-  col_names.extend(new_col)
-  data.columns = col_names
+  ##Read the csv file into python and rename columns 
+  data = rename_data()
   #create v1
   v1 = data.loc[:,('ASK_PRICE1','ASK_SIZE1','BID_PRICE1','BID_SIZE1',
     'ASK_PRICE2','ASK_SIZE2','BID_PRICE2','BID_SIZE2',
