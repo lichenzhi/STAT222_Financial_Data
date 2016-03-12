@@ -4,9 +4,9 @@ from rename_column import *
 
 ###Function to create v1 and v4 
 def createV1V4():
-  ##Read the csv file into python and rename columns 
+    ##Read the csv file into python and rename columns 
     data = rename_data()
-  #create v1
+    #create v1
     v1 = data.loc[:,('ASK_PRICE1','ASK_SIZE1','BID_PRICE1','BID_SIZE1',
       'ASK_PRICE2','ASK_SIZE2','BID_PRICE2','BID_SIZE2',
       'ASK_PRICE3','ASK_SIZE3','BID_PRICE3','BID_SIZE3',
