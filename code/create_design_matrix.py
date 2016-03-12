@@ -13,5 +13,5 @@ def create_design_matrix():
 
 #if you want to check whether you can run the design matrix.
 #uncomment the following two lines
-test = create_design_matrix()
-print (test.loc[1,:])
+#test = create_design_matrix()
+#print (test.loc[1,:])
