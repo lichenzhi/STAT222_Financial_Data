@@ -1,6 +1,5 @@
 # STAT222_Financial_Data
-#Github Instruction <br />
-Git Flow <br />
+# Git Flow <br />
 git checkout master - Switch to master first <br />
 git pull origin master - First update and sync the repo <br />
 Resolve merge conflicts (hopefully none!) <br />
