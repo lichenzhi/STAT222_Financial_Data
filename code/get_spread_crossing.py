@@ -18,7 +18,7 @@ def get_spread_crossing(NUM_OF_TIME_STAMP):
     para_after.index = range(para_after.shape[0])
     #create empty column 
     para_after['SPREAD'] = np.nan
-    before_after = pd.concat([para_before,para_after,emp],axis=1)
+    before_after = pd.concat([para_before,para_after],axis=1)
     before_after.columns = ['ASK_PRICE1_BEFORE','BID_PRICE1_BEFORE',
     'BID_PRICE1_AFTER','ASK_PRICE1_AFTER','SPREAD_CROSSING']
     before_after['SPREAD_CROSSING'][before_after['BID_PRICE1_AFTER']>
