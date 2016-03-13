@@ -10,3 +10,7 @@ def create_response(NUM_OF_TIME_STAMP):
     response = pd.concat([mid_price_movement,spread_crossing], axis = 1)
     response.columns = ['mid_price_movement','spread_crossing']
     return (response)
+
+#test 
+#print (create_response(5).loc[0,:])
+#print (create_response(5).shape)
