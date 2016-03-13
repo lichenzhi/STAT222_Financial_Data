@@ -20,6 +20,7 @@ def get_mid_price_movement(NUM_OF_TIME_STAMP):
     before_after.columns = ['before','after']
     #after-before=difference of mid price
     MID_PRICE_DIFF = before_after['after'].sub(before_after['before'],axis=0)
+    MID_PRICE_DIFF.columns = ['MID_PRICE_DIFF']
     #join the dataset and create one more column to include the mid-price 
     #movement 
     #creat empty column 
