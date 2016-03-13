@@ -23,7 +23,7 @@ def get_mid_price_movement(NUM_OF_TIME_STAMP):
     #join the dataset and create one more column to include the mid-price 
     #movement 
     before_after = pd.concat([before_after,MID_PRICE_DIFF,MID_PRICE_DIFF],axis=1)
-    before_after.columns = ['before','after','MID_PRICE_DIFF','MID_PRICE_MOVEMENT','MID_PRICE_DIFF']
+    before_after.columns = ['before','after','MID_PRICE_DIFF','MID_PRICE_MOVEMENT']
     #downward movement: set to -1
     before_after['MID_PRICE_MOVEMENT'][before_after['MID_PRICE_DIFF']<0] = int(-1)
     #upward movement: set to 1 
