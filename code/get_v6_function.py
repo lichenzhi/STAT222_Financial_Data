@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 from rename_column import *
 ##Read the csv file into python and rename columns 
-data = rename_data()
 
-def get_v6_function(NUM_OF_TIME_STAMP):
+
+def createV6(NUM_OF_TIME_STAMP):
+    data = rename_data()
     #get the 40 attributes 
     before = data.loc[:,('ASK_PRICE1','ASK_SIZE1','BID_PRICE1','BID_SIZE1',
           'ASK_PRICE2','ASK_SIZE2','BID_PRICE2','BID_SIZE2',

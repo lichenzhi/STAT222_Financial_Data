@@ -2,8 +2,8 @@
 import pandas as pd 
 import numpy as np
 from rename_column import *
-##Read the csv file into python and rename columns 
-data = rename_data()
+
+
 
 #function to get the bid-ask spread crossing 
 #when NUM_OF_TIME_STAMP is small, most of the spread crossing is stationary 
@@ -13,6 +13,8 @@ data = rename_data()
 #stationary: if best ask price at t+dt >= best bid price at t and 
 #best bid price at t+dt <= best ask price at t 
 def get_spread_crossing(NUM_OF_TIME_STAMP):
+    ##Read the csv file into python and rename columns 
+    data = rename_data()
     para_before = data.loc[:,('ASK_PRICE1','BID_PRICE1')]
     para_after = data.loc[NUM_OF_TIME_STAMP:,('BID_PRICE1','ASK_PRICE1')]
     para_after.index = range(para_after.shape[0])

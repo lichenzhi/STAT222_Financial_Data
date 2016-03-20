@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from rename_column import *
 ##Read the csv file into python and rename columns 
-data = rename_data()
+
 
 ##function to get the mid price movement 
 ##For example, if we have NUM_OF_TIME_STAMP=5, we're comparing row index 0 with 
@@ -11,6 +11,7 @@ data = rename_data()
 ##at row index 0, then Y0 should be upward mid price movement. The last 5 mid 
 ##price movement is NA. 
 def get_mid_price_movement(NUM_OF_TIME_STAMP):
+    data = rename_data()
     before = (data['BID_PRICE1'] + data['ASK_PRICE1']) / 2
     #subset the data from position NUM_OF_TIME_STAMP 
     after = (data.loc[NUM_OF_TIME_STAMP:,'BID_PRICE1'] + data.loc[NUM_OF_TIME_STAMP:,'ASK_PRICE1']) / 2
