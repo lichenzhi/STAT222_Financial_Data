@@ -81,7 +81,7 @@ def sample_by_movement_population(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_T
     # index.shape
 
     sample_by_movement_population = pd.DataFrame(data.loc[index])
-    sample_by_movement_proportion = sample_by_movement_proportion.drop(labels="spread_crossing", axis = 1)
+    sample_by_movement_population = sample_by_movement_proportion.drop(labels="spread_crossing", axis = 1)
     return (sample_by_movement_population)
 
 ## testing
@@ -167,7 +167,7 @@ def sample_by_spread_population(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_TIM
     # index.shape
 
     sample_by_spread_population = pd.DataFrame(data.loc[index])
-    sample_by_spread_proportion = sample_by_spread_proportion.drop(labels="mid_price_movement", axis = 1)
+    sample_by_spread_population = sample_by_spread_proportion.drop(labels="mid_price_movement", axis = 1)
     return (sample_by_spread_population)
 
 ## testing
