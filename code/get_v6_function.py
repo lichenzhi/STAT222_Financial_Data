@@ -34,6 +34,15 @@ def createV6(NUM_OF_TIME_STAMP):
         temp = (before_after.iloc[:,col_num/2+i].sub(before_after.iloc[:,i],
             axis=0))/NUM_OF_TIME_STAMP
         df = pd.concat([df,temp],axis=1,ignore_index=True)
+    #extract the non-NA part
+    non_NA_part = df[:df.shape[0]-NUM_OF_TIME_STAMP]    
+    #extract the NA part 
+    NA_part = df[df.shape[0]-NUM_OF_TIME_STAMP:df.shape[0]]
+    #recombine by rows, NA part comes first. 
+    #If time stamp = 30 
+    #derivative computing using 30th row and 0 row data, should be 
+    #put at index 30, instead of 0 
+    df = pd.concat([NA_part,non_NA_part],axis=0,ignore_index=True)
     #rename the columns 
     df.columns = ['deri_ASK_PRICE1','deri_ASK_SIZE1','deri_BID_PRICE1',
     'deri_BID_SIZE1','deri_ASK_PRICE2','deri_ASK_SIZE2','deri_BID_PRICE2',
