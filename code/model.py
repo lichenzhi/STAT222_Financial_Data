@@ -7,21 +7,20 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
 nrow=10000
-NUM_OF_TIME_STAMP_FOR_DERIV=30
-NUM_OF_TIME_STAMP_FOR_RESPONSE=30
+NUM_OF_TIME_STAMP_FOR_DERIV=10
+NUM_OF_TIME_STAMP_FOR_RESPONSE=10
 
 #get the data for sampling 
 sample_data = sample_by_movement_population(nrow,NUM_OF_TIME_STAMP_FOR_DERIV, 
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)
+sample_data = sample_data.dropna()
 #check the shape of sample data 
 #sample_data.shape
 #extract the design matrix, i.e. get rid of the last column.126 
 #hard-code 126, will change it later 
 X = sample_data.iloc[:,:126]
-X = X.dropna()
 #extract the response for the sample data, i.e. get the last column 
 y = sample_data.iloc[:,126].values
-y = y[y != np.array(None)]
 #get the testing data design matrix, get rid of the last two columns. same dimension as X 
 testing_data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1].iloc[:,:126]
@@ -109,8 +108,8 @@ print ("------------------------------------------------------------")
 print ("Prediction Accurate Count Matrix ")
 prediction_accurate_count_matrix = pd.crosstab(index=predict_true.iloc[:,0], 
                            columns=predict_true.iloc[:,1],margins=True)    
-prediction_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-prediction_accurate_count_matrix.index = ["down","colTotal"]
+prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
 print ("Prediction Accurate Rate Matrix ")
@@ -122,8 +121,8 @@ print ("------------------------------------------------------------")
 print ("Recall Accurate Rate Matrix ")
 recall_accurate_count_matrix = pd.crosstab(index=recall_true.iloc[:,0], 
                            columns=recall_true.iloc[:,1],margins=True)    
-recall_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-recall_accurate_count_matrix.index = ["down","stationary","colTotal"]
+recall_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+recall_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (recall_accurate_count_matrix)
 print (" ")
 print ("Recall Accurate Rate Matrix ")
@@ -184,8 +183,8 @@ print ("------------------------------------------------------------")
 print ("Prediction Accurate Count Matrix ")
 prediction_accurate_count_matrix = pd.crosstab(index=predict_true.iloc[:,0], 
                            columns=predict_true.iloc[:,1],margins=True)    
-prediction_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-prediction_accurate_count_matrix.index = ["down","up","colTotal"]
+prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
 print ("Prediction Accurate Rate Matrix ")
@@ -197,8 +196,8 @@ print ("------------------------------------------------------------")
 print ("Recall Accurate Rate Matrix ")
 recall_accurate_count_matrix = pd.crosstab(index=recall_true.iloc[:,0], 
                            columns=recall_true.iloc[:,1],margins=True)    
-recall_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-recall_accurate_count_matrix.index = ["down","up","colTotal"]
+recall_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+recall_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (recall_accurate_count_matrix)
 print (" ")
 print ("Recall Accurate Rate Matrix ")
@@ -259,8 +258,8 @@ print ("------------------------------------------------------------")
 print ("Prediction Accurate Count Matrix ")
 prediction_accurate_count_matrix = pd.crosstab(index=predict_true.iloc[:,0], 
                            columns=predict_true.iloc[:,1],margins=True)    
-prediction_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-prediction_accurate_count_matrix.index = ["down","up","colTotal"]
+prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
 print ("Prediction Accurate Rate Matrix ")
@@ -272,8 +271,8 @@ print ("------------------------------------------------------------")
 print ("Recall Accurate Rate Matrix ")
 recall_accurate_count_matrix = pd.crosstab(index=recall_true.iloc[:,0], 
                            columns=recall_true.iloc[:,1],margins=True)    
-recall_accurate_count_matrix.columns = ["down","stationary","up","rowTotal"]
-recall_accurate_count_matrix.index = ["down","up","colTotal"]
+recall_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
+recall_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (recall_accurate_count_matrix)
 print (" ")
 print ("Recall Accurate Rate Matrix ")
