@@ -150,7 +150,7 @@ def sample_by_spread_population(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_TIM
     """
     data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV,NUM_OF_TIME_STAMP_FOR_RESPONSE)[0]
 
-    proportion = (data[data['mid_price_movement']==1].shape[0], data[data['mid_price_movement']==-1].shape[0], data[data['mid_price_movement']==0].shape[0])
+    proportion = (data[data['spread_crossing']==1].shape[0], data[data['spread_crossing']==-1].shape[0], data[data['spread_crossing']==0].shape[0])
     ratio = (float(proportion[0])/sum(proportion),float(proportion[1])/sum(proportion),float(proportion[2])/sum(proportion))
     n_upward = int(ratio[0]*nrow)
     n_downward = int(ratio[1]*nrow)
