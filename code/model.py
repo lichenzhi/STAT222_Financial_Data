@@ -126,8 +126,8 @@ print (" ")
 #create rf model
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
-es = 100
-fs = np.linspace(3, 12, 10)
+es = [100]
+fs = [2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 rf = RandomForestClassifier()
 clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,max_features=fs),
                     n_jobs=-1)
