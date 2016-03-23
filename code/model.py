@@ -5,8 +5,10 @@ from sklearn import svm
 from sklearn import cross_validation
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.grid_search import GridSearchCV
+from sklearn.preprocessing import StandardScaler
 
-nrow=10000
+nrow=20000
 NUM_OF_TIME_STAMP_FOR_DERIV=10
 NUM_OF_TIME_STAMP_FOR_RESPONSE=10
 
@@ -32,44 +34,27 @@ testing_data_y = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV,
 testing_data_y = pd.DataFrame(testing_data_y)
 testing_data_y.index = range(testing_data_y.shape[0])
 
-#create svm model 
-clf = svm.SVC()
-#create rf model
-rf = RandomForestClassifier()
-#create gradient boosting
-gb = GradientBoostingClassifier()
 
-#create 10 fold validation 
-kfold = cross_validation.KFold(n=X.shape[0], n_folds=2)
 
-#compute the scores for 10 folds for svm
-scores_svm = [clf.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], 
-	y[test]) for train, test in kfold]
-#compute the scores for 10 folds for rf
-scores_rf = [rf.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], 
-	y[test]) for train, test in kfold]
-#compute the scores for 10 folds for gb
-scores_gb = [gb.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], 
-	y[test]) for train, test in kfold]
 
-#get the index of maximum score for svm
-max_score_index_svm = scores_svm.index(max(scores_svm))
-#get the index of maximum score for svm
-max_score_index_rf = scores_rf.index(max(scores_rf))
-#get the index of maximum score for svm
-max_score_index_gb = scores_gb.index(max(scores_gb))
 
 ######################   SVM   #####################################
 #convert kfold to a list and assign the train, test to be the fold 
 #containing indexes of maximum scores 
-kfold_list = list(kfold)
-train, test = kfold_list[max_score_index_svm]
-#use this to double check if the score is the highest
-#clf.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], y[test])
+
+#create svm model 
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+Cs = np.logspace(-6, -1, 10)
+Gammas = np.logspace(-9, 3, 13)
+svc = svm.SVC()
+clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs,gamma=Gammas),
+                    n_jobs=-1)
+clf.fit(X, y)                               
+clf = clf.best_estimator_ 
 #fit the best model 
-clf.fit(X.iloc[train,:], y[train])
-#predict the testing data and convert to data frame 
-prediction = clf.predict(testing_data)
+clf.fit(X, y)
+prediction = clf.predict(scaler.fit_transform(testing_data))
 prediction = pd.DataFrame(prediction)
 #recall to the whole training data
 recall = clf.predict(X)
@@ -137,17 +122,24 @@ print (" ")
 ######################   RF   #####################################
 #convert kfold to a list and assign the train, test to be the fold 
 #containing indexes of maximum scores 
-kfold_list = list(kfold)
-train, test = kfold_list[max_score_index_rf]
-#use this to double check if the score is the highest
-#clf.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], y[test])
+
+#create rf model
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+es = 100
+fs = np.linspace(3, 12, 10)
+rf = RandomForestClassifier()
+clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,max_features=fs),
+                    n_jobs=-1)
+clf.fit(X, y)                               
+clf = clf.best_estimator_ 
 #fit the best model 
-rf.fit(X.iloc[train,:], y[train])
+clf.fit(X, y)
 #predict the testing data and convert to data frame 
-prediction = rf.predict(testing_data)
-prediction = pd.DataFrame(prediction)
+prediction = clf.predict(scaler.fit_transform((testing_data)))
+prediction = clf.DataFrame(prediction)
 #recall to the whole training data
-recall = rf.predict(X)
+recall = clf.predict(X)
 recall = pd.DataFrame(recall)
 #combine the prediction, reacall and true value 
 predict_true = pd.concat([prediction,testing_data_y],axis=1)
@@ -209,20 +201,28 @@ print ("------------------------------------------------------------")
 print (" ")
 print (" ")
 
+
 ######################   Gradient Boosting   #####################################
 #convert kfold to a list and assign the train, test to be the fold 
 #containing indexes of maximum scores 
-kfold_list = list(kfold)
-train, test = kfold_list[max_score_index_gb]
-#use this to double check if the score is the highest
-#clf.fit(X.iloc[train,:], y[train]).score(X.iloc[test,:], y[test])
+
+#create rf model
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+es = 100
+ls = np.linspace(0.0001, 1, 10)
+gb = GradientBoostingClassifier()
+clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,learning_rate=ls),
+                    n_jobs=-1)
+clf.fit(X, y)                               
+clf = clf.best_estimator_ 
 #fit the best model 
-gb.fit(X.iloc[train,:], y[train])
+clf.fit(X, y)
 #predict the testing data and convert to data frame 
-prediction = gb.predict(testing_data)
+prediction = clf.predict(scaler.fit_transform((testing_data)))
 prediction = pd.DataFrame(prediction)
 #recall to the whole training data
-recall = gb.predict(X)
+recall = clf.predict(X)
 recall = pd.DataFrame(recall)
 #combine the prediction, reacall and true value 
 predict_true = pd.concat([prediction,testing_data_y],axis=1)
