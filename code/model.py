@@ -18,8 +18,10 @@ sample_data = sample_by_movement_population(nrow,NUM_OF_TIME_STAMP_FOR_DERIV,
 #extract the design matrix, i.e. get rid of the last column.126 
 #hard-code 126, will change it later 
 X = sample_data.iloc[:,:126]
+X = X.dropna()
 #extract the response for the sample data, i.e. get the last column 
 y = sample_data.iloc[:,126].values
+y = y[y != np.array(None)]
 #get the testing data design matrix, get rid of the last two columns. same dimension as X 
 testing_data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1].iloc[:,:126]
