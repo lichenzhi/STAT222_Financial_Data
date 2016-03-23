@@ -25,15 +25,26 @@ def sample_by_movement_proportion(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_T
     n_upward = int(ratio[0]*nrow)
     n_downward = int(ratio[1]*nrow)
     n_stationary = int(ratio[2]*nrow)
-
+    
     index_upward = list(data[data['mid_price_movement']==1].index)
     index_downward = list(data[data['mid_price_movement']==-1].index)
     index_stationary = list(data[data['mid_price_movement']==0].index)
 
     index = np.array([])
-    index= np.append(index,np.random.choice(index_upward,replace=False,size = n_upward))
-    index = np.append(index,np.random.choice(index_downward,replace=False,size=n_downward))
-    index= np.append(index,np.random.choice(index_stationary,replace=False,size = n_stationary))
+    if len(index_upward) >= n_upward:
+        index= np.append(index,np.random.choice(index_upward,replace=False,size = n_upward))
+    else:
+        index= np.append(index,np.random.choice(index_upward,replace=True,size = n_upward))
+
+    if len(index_downward) >= n_downward:
+        index = np.append(index,np.random.choice(index_downward,replace=False,size = n_downward))
+    else:
+        index= np.append(index,np.random.choice(index_downward,replace=True,size = n_downward))
+
+    if len(index_stationary) >= n_stationary:
+        index= np.append(index,np.random.choice(index_stationary,replace=False,size = n_stationary))
+    else:
+        index= np.append(index,np.random.choice(index_stationary,replace=True,size = n_stationary))
     # index.shape
 
     sample_by_movement_proportion = pd.DataFrame(data.loc[index])
@@ -117,9 +128,20 @@ def sample_by_spread_proportion(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_TIM
     index_stationary = list(data[data['spread_crossing']==0].index)
 
     index = np.array([])
-    index= np.append(index,np.random.choice(index_upward,replace=False,size = n_upward))
-    index = np.append(index,np.random.choice(index_downward,replace=False,size=n_downward))
-    index= np.append(index,np.random.choice(index_stationary,replace=False,size = n_stationary))
+    if len(index_upward) >= n_upward:
+        index= np.append(index,np.random.choice(index_upward,replace=False,size = n_upward))
+    else:
+        index= np.append(index,np.random.choice(index_upward,replace=True,size = n_upward))
+    
+    if len(index_downward) >= n_downward:
+        index = np.append(index,np.random.choice(index_downward,replace=False,size = n_downward))
+    else:
+        index= np.append(index,np.random.choice(index_downward,replace=True,size = n_downward))
+    
+    if len(index_stationary) >= n_stationary:
+        index= np.append(index,np.random.choice(index_stationary,replace=False,size = n_stationary))
+    else:
+        index= np.append(index,np.random.choice(index_stationary,replace=True,size = n_stationary))
     # index.shape
 
     sample_by_spread_proportion = pd.DataFrame(data.loc[index])
@@ -127,7 +149,7 @@ def sample_by_spread_proportion(nrow, NUM_OF_TIME_STAMP_FOR_DERIV=30, NUM_OF_TIM
     return (sample_by_spread_proportion)
 
 ## testing
-#test = sample_by_spread_proportion(100)
+#test = sample_by_spread_proportion(10000)
 #print (test.shape)
 
 
