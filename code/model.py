@@ -25,11 +25,12 @@ X = sample_data.iloc[:,:126]
 y = sample_data.iloc[:,126].values
 #get the testing data design matrix, get rid of the last two columns. same dimension as X 
 testing_data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
-	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1].iloc[:,:126]
+	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1]
+testing_data = testing_data.dropna()
+testing_data_x = testing_data.iloc[:, :126]
 #get the testing data response, mid_price_movement, same index as y 
 #if it's spread crossing, index should be 127, instead of 126
-testing_data_y = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
-	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1].iloc[:,126]
+testing_data_y = testing_data.iloc[:,126]
 #convert to a data frame and reindex from 0 
 testing_data_y = pd.DataFrame(testing_data_y)
 testing_data_y.index = range(testing_data_y.shape[0])
@@ -56,7 +57,7 @@ clf.fit(X, y)
 clf = clf.best_estimator_ 
 #fit the best model 
 clf.fit(X, y)
-prediction = clf.predict(scaler.fit_transform(testing_data))
+prediction = clf.predict(scaler.fit_transform(testing_data_x))
 prediction = pd.DataFrame(prediction)
 #fit to the whole training data
 train = clf.predict(X)
@@ -92,16 +93,20 @@ print (float(predict_correct)/predict_total)
 print ("------------------------------------------------------------")
 
 #train accurate matrix 
-print ("Training Accurate Rate Matrix ")
+print ("Training Accurate Count Matrix ")
 train_accurate_count_matrix = pd.crosstab(index=train_true.iloc[:,0], 
                            columns=train_true.iloc[:,1],margins=True)    
 train_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
 train_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (train_accurate_count_matrix)
 print (" ")
-print ("train Accurate Rate Matrix ")
+print ("Training Prediction Accurate Rate Matrix ")
 train_accurate_rate_matrix = train_accurate_count_matrix.T / train_accurate_count_matrix["rowTotal"]
 print (train_accurate_rate_matrix.T)
+print (" ")
+print ("Training Recall Accurate Rate Matrix ")
+train_accurate_rate_matrix = train_accurate_count_matrix / train_accurate_count_matrix.ix["colTotal"]
+print (train_accurate_rate_matrix)
 print ("------------------------------------------------------------")
 
 #Testing accurate matrix 
@@ -112,11 +117,11 @@ prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",
 prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
-print ("Prediction Accurate Rate Matrix ")
+print ("Testing Prediction Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix.T / prediction_accurate_count_matrix["rowTotal"]
 print (prediction_accurate_rate_matrix.T)
 print (" ")
-print ("Recall Accurate Rate Matrix ")
+print ("Testing Recall Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix / prediction_accurate_count_matrix.ix["colTotal"]
 print (prediction_accurate_rate_matrix)
 print ("------------------------------------------------------------")
@@ -145,7 +150,7 @@ clf = clf.best_estimator_
 #fit the best model 
 clf.fit(X, y)
 #predict the testing data and convert to data frame 
-prediction = clf.predict(scaler.fit_transform((testing_data)))
+prediction = clf.predict(scaler.fit_transform((testing_data_x)))
 prediction = pd.DataFrame(prediction)
 
 #fit to the whole training data
@@ -182,16 +187,20 @@ print (float(predict_correct)/predict_total)
 print ("------------------------------------------------------------")
 
 #train accurate matrix 
-print ("Training Accurate Rate Matrix ")
+print ("Training Accurate Count Matrix ")
 train_accurate_count_matrix = pd.crosstab(index=train_true.iloc[:,0], 
                            columns=train_true.iloc[:,1],margins=True)    
 train_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
 train_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (train_accurate_count_matrix)
 print (" ")
-print ("train Accurate Rate Matrix ")
+print ("Training Prediction Accurate Rate Matrix ")
 train_accurate_rate_matrix = train_accurate_count_matrix.T / train_accurate_count_matrix["rowTotal"]
 print (train_accurate_rate_matrix.T)
+print (" ")
+print ("Training Recall Accurate Rate Matrix ")
+train_accurate_rate_matrix = train_accurate_count_matrix / train_accurate_count_matrix.ix["colTotal"]
+print (train_accurate_rate_matrix)
 print ("------------------------------------------------------------")
 
 #Testing accurate matrix 
@@ -202,11 +211,11 @@ prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",
 prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
-print ("Prediction Accurate Rate Matrix ")
+print ("Testing Prediction Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix.T / prediction_accurate_count_matrix["rowTotal"]
 print (prediction_accurate_rate_matrix.T)
 print (" ")
-print ("Recall Accurate Rate Matrix ")
+print ("Testing Recall Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix / prediction_accurate_count_matrix.ix["colTotal"]
 print (prediction_accurate_rate_matrix)
 print ("------------------------------------------------------------")
@@ -235,7 +244,7 @@ clf = clf.best_estimator_
 #fit the best model 
 clf.fit(X, y)
 #predict the testing data and convert to data frame 
-prediction = clf.predict(scaler.fit_transform((testing_data)))
+prediction = clf.predict(scaler.fit_transform((testing_data_x)))
 prediction = pd.DataFrame(prediction)
 #fit to the whole training data
 train = clf.predict(X)
@@ -271,16 +280,20 @@ print (float(predict_correct)/predict_total)
 print ("------------------------------------------------------------")
 
 #train accurate matrix 
-print ("Training Accurate Rate Matrix ")
+print ("Training Accurate Count Matrix ")
 train_accurate_count_matrix = pd.crosstab(index=train_true.iloc[:,0], 
                            columns=train_true.iloc[:,1],margins=True)    
 train_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
 train_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (train_accurate_count_matrix)
 print (" ")
-print ("train Accurate Rate Matrix ")
+print ("Training Prediction Accurate Rate Matrix ")
 train_accurate_rate_matrix = train_accurate_count_matrix.T / train_accurate_count_matrix["rowTotal"]
 print (train_accurate_rate_matrix.T)
+print (" ")
+print ("Training Recall Accurate Rate Matrix ")
+train_accurate_rate_matrix = train_accurate_count_matrix / train_accurate_count_matrix.ix["colTotal"]
+print (train_accurate_rate_matrix)
 print ("------------------------------------------------------------")
 
 #Testing accurate matrix 
@@ -291,11 +304,11 @@ prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",
 prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
 print (prediction_accurate_count_matrix)
 print (" ")
-print ("Prediction Accurate Rate Matrix ")
+print ("Testing Prediction Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix.T / prediction_accurate_count_matrix["rowTotal"]
 print (prediction_accurate_rate_matrix.T)
 print (" ")
-print ("Recall Accurate Rate Matrix ")
+print ("Testing Recall Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix / prediction_accurate_count_matrix.ix["colTotal"]
 print (prediction_accurate_rate_matrix)
 print ("------------------------------------------------------------")

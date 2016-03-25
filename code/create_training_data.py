@@ -49,12 +49,17 @@ def split_data(NUM_OF_TIME_STAMP_FOR_DERIV = 30, NUM_OF_TIME_STAMP_FOR_RESPONSE 
 #print (split_data()[0].shape)
 
 def split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV = 30, NUM_OF_TIME_STAMP_FOR_RESPONSE = 5):
-	data_for_model = split_data(NUM_OF_TIME_STAMP_FOR_DERIV, NUM_OF_TIME_STAMP_FOR_RESPONSE)[0]
-	nrow = data_for_model.shape[0]
-	nrow_train_validate = nrow * 3 / 4
-	data_for_training = data_for_model.iloc[: nrow_train_validate, :]
-	data_for_testing = data_for_model.iloc[nrow_train_validate:, :]
-	return (data_for_training, data_for_testing)
+    data_for_model = split_data(NUM_OF_TIME_STAMP_FOR_DERIV, NUM_OF_TIME_STAMP_FOR_RESPONSE)[0]
+    nrow = data_for_model.shape[0]
+    nrow_train_validate = nrow * 3 / 4
+    index = np.array([])
+    index = np.append(index, np.random.choice(range(0, nrow), replace=False, size = nrow_train_validate))
+    data_for_training = data_for_model.loc[index]
+    index_test = set(range(0,nrow))-set(index)
+    data_for_testing = data_for_model.loc[index_test]
+    #data_for_training = data_for_model.iloc[: nrow_train_validate, :]
+    #data_for_testing = data_for_model.iloc[nrow_train_validate:, :]
+    return (data_for_training, data_for_testing)
 
 #test 
 #print (split_modeling_data()[0].shape)
