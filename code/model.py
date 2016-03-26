@@ -16,21 +16,22 @@ NUM_OF_TIME_STAMP_FOR_RESPONSE=30
 sample_data = sample_by_movement_population(nrow,NUM_OF_TIME_STAMP_FOR_DERIV, 
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)
 sample_data = sample_data.dropna()
+#number of features 126
+NUM_FEATURE = sample_data.shape[1] - 1
 #check the shape of sample data 
 #sample_data.shape
 #extract the design matrix, i.e. get rid of the last column.126 
-#hard-code 126, will change it later 
-X = sample_data.iloc[:,:126]
+X = sample_data.iloc[:,:NUM_FEATURE]
 #extract the response for the sample data, i.e. get the last column 
-y = sample_data.iloc[:,126].values
+y = sample_data.iloc[:,NUM_FEATURE].values
 #get the testing data design matrix, get rid of the last two columns. same dimension as X 
 testing_data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)[1]
 testing_data = testing_data.dropna()
-testing_data_x = testing_data.iloc[:, :126]
+testing_data_x = testing_data.iloc[:, :NUM_FEATURE]
 #get the testing data response, mid_price_movement, same index as y 
 #if it's spread crossing, index should be 127, instead of 126
-testing_data_y = testing_data.iloc[:,126]
+testing_data_y = testing_data.iloc[:,NUM_FEATURE]
 #convert to a data frame and reindex from 0 
 testing_data_y = pd.DataFrame(testing_data_y)
 testing_data_y.index = range(testing_data_y.shape[0])
