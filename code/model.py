@@ -8,9 +8,9 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 
-nrow=20000
+nrow=30000
 NUM_OF_TIME_STAMP_FOR_DERIV=30
-NUM_OF_TIME_STAMP_FOR_RESPONSE=20
+NUM_OF_TIME_STAMP_FOR_RESPONSE=30
 
 #get the data for sampling 
 sample_data = sample_by_movement_population(nrow,NUM_OF_TIME_STAMP_FOR_DERIV, 
@@ -47,9 +47,9 @@ testing_data_y.index = range(testing_data_y.shape[0])
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 #Cs = np.logspace(-6, -1, 10)
-Cs = [0.1]
+Cs = [1]
 #Gammas = np.logspace(-9, 3, 13)
-Gammas = [0]
+Gammas = [0.1]
 svc = svm.SVC()
 clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs,gamma=Gammas),
                     n_jobs=-1)
@@ -140,8 +140,8 @@ print (" ")
 #create rf model
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
-es = [100]
-fs = [11]
+es = [500]
+fs = [11,126]
 rf = RandomForestClassifier()
 clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,max_features=fs),
                     n_jobs=-1)
@@ -180,6 +180,7 @@ for i in range(train_total):
 print ("------------------------------------------------------------")
 print ("Result of RandomForestClassifier")
 print ("------------------------------------------------------------")
+stationary_precision = train_accurate_rate_matrix.T.iloc[1,1]
 print ("Overall Performace of training")
 print (float(train_correct)/train_total)
 print ("Overall Performace of Testing")
@@ -196,11 +197,29 @@ print (train_accurate_count_matrix)
 print (" ")
 print ("Training Prediction Accurate Rate Matrix ")
 train_accurate_rate_matrix = train_accurate_count_matrix.T / train_accurate_count_matrix["rowTotal"]
+down_precision = train_accurate_rate_matrix.T.iloc[0,0]
+stationary_precision = train_accurate_rate_matrix.T.iloc[1,1]
+up_precision = train_accurate_rate_matrix.T.iloc[2,2]
+precision = [down_precision,stationary_precision, up_precision]
 print (train_accurate_rate_matrix.T)
 print (" ")
 print ("Training Recall Accurate Rate Matrix ")
 train_accurate_rate_matrix = train_accurate_count_matrix / train_accurate_count_matrix.ix["colTotal"]
 print (train_accurate_rate_matrix)
+print (" ")
+print ("Training Summary ")
+down_recall = train_accurate_rate_matrix.iloc[0,0]
+stationary_recall = train_accurate_rate_matrix.iloc[1,1]
+up_recall = train_accurate_rate_matrix.iloc[2,2]
+recall = [down_recall, stationary_recall, up_recall]
+down_f1=2*precision[0]*recall[0]/(precision[0]+recall[0])
+stationary_f1=2*precision[1]*recall[1]/(precision[1]+recall[1])
+up_f1=2*precision[2]*recall[2]/(precision[2]+recall[2])
+f1=[down_f1,stationary_f1,up_f1]
+summary = pd.concat([pd.DataFrame(precision),pd.DataFrame(recall),pd.DataFrame(f1)],axis=1)
+summary.columns = ['precision','recall',"F1_score"]
+summary.index = ['down','stationary','up']
+print (summary)
 print ("------------------------------------------------------------")
 
 #Testing accurate matrix 
@@ -209,15 +228,34 @@ prediction_accurate_count_matrix = pd.crosstab(index=predict_true.iloc[:,0],
                            columns=predict_true.iloc[:,1],margins=True)    
 prediction_accurate_count_matrix.rename(columns = {-1.0:'down',0.0:"stationary",1.0:"up","All":"rowTotal"},inplace=True)
 prediction_accurate_count_matrix.rename(index ={-1.0:'down',0.0:"stationary",1.0:"up","All":"colTotal"},inplace=True)
+
 print (prediction_accurate_count_matrix)
 print (" ")
 print ("Testing Prediction Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix.T / prediction_accurate_count_matrix["rowTotal"]
+down_precision = prediction_accurate_rate_matrix.T.iloc[0,0]
+stationary_precision = prediction_accurate_rate_matrix.T.iloc[1,1]
+up_precision = prediction_accurate_rate_matrix.T.iloc[2,2]
+precision = [down_precision,stationary_precision, up_precision]
 print (prediction_accurate_rate_matrix.T)
 print (" ")
 print ("Testing Recall Accurate Rate Matrix ")
 prediction_accurate_rate_matrix = prediction_accurate_count_matrix / prediction_accurate_count_matrix.ix["colTotal"]
 print (prediction_accurate_rate_matrix)
+print (" ")
+print ("Testing Summary ")
+down_recall = prediction_accurate_rate_matrix.iloc[0,0]
+stationary_recall = prediction_accurate_rate_matrix.iloc[1,1]
+up_recall = prediction_accurate_rate_matrix.iloc[2,2]
+recall = [down_recall, stationary_recall, up_recall]
+down_f1=2*precision[0]*recall[0]/(precision[0]+recall[0])
+stationary_f1=2*precision[1]*recall[1]/(precision[1]+recall[1])
+up_f1=2*precision[2]*recall[2]/(precision[2]+recall[2])
+f1=[down_f1,stationary_f1,up_f1]
+summary = pd.concat([pd.DataFrame(precision),pd.DataFrame(recall),pd.DataFrame(f1)],axis=1)
+summary.columns = ['precision','recall',"F1_score"]
+summary.index = ['down','stationary','up']
+print (summary)
 print ("------------------------------------------------------------")
 
 print ("END RF")
