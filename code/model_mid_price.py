@@ -177,7 +177,7 @@ print (" ")
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 es = [500]
-fs = [11,126]
+fs = [11]
 rf = RandomForestClassifier()
 clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,max_features=fs),
                     n_jobs=-1)
@@ -309,7 +309,8 @@ scaler = StandardScaler()
 X = scaler.fit_transform(X)
 es = [100]
 #ls = np.linspace(0.0001, 1, 10)
-ls = [0.5]
+#ls = [0.5]
+ls = [0.56]
 gb = GradientBoostingClassifier()
 clf = GridSearchCV(estimator=gb, param_grid=dict(n_estimators=es,learning_rate=ls),
                     n_jobs=-1)
