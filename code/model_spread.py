@@ -13,7 +13,7 @@ NUM_OF_TIME_STAMP_FOR_DERIV=30
 NUM_OF_TIME_STAMP_FOR_RESPONSE=30
 
 #get the data for sampling 
-sample_data = sample_by_spread_population(nrow,NUM_OF_TIME_STAMP_FOR_DERIV, 
+sample_data = sample_by_spread_proportion(nrow,NUM_OF_TIME_STAMP_FOR_DERIV,
 	NUM_OF_TIME_STAMP_FOR_RESPONSE)
 sample_data = sample_data.dropna()
 #number of features 126
@@ -177,7 +177,7 @@ print (" ")
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 es = [500]
-fs = [11,126]
+fs = [11]
 rf = RandomForestClassifier()
 clf = GridSearchCV(estimator=rf, param_grid=dict(n_estimators=es,max_features=fs),
                     n_jobs=-1)
@@ -307,9 +307,9 @@ print (" ")
 #create rf model
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
-es = [100]
+es = [500]
 #ls = np.linspace(0.0001, 1, 10)
-ls = [0.5]
+ls = [0.56]
 gb = GradientBoostingClassifier()
 clf = GridSearchCV(estimator=gb, param_grid=dict(n_estimators=es,learning_rate=ls),
                     n_jobs=-1)
