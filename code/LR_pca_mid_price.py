@@ -7,32 +7,57 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from sklearn import linear_model
 from sklearn.grid_search import GridSearchCV
+from create_response import *
+from create_design_matrix import *
+from rename_column import *
 
 
 
 NUM_OF_TIME_STAMP_FOR_DERIV = 30
 NUM_OF_TIME_STAMP_FOR_RESPONSE = 30
-#get the dataset for time period 9:30 to 11:00 training set 
-df = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, NUM_OF_TIME_STAMP_FOR_RESPONSE)[0]
-df = df.dropna()
-NUM_FEATURE = df.shape[1] - 2
-X = df.iloc[:,:NUM_FEATURE]
+#get the data from 9:30 - 11:00 
+data_for_model = split_data(NUM_OF_TIME_STAMP_FOR_DERIV, NUM_OF_TIME_STAMP_FOR_RESPONSE)[0]
+data_for_model = data_for_model.dropna()
+NUM_FEATURE = data_for_model.shape[1] - 2
+# get 126 columns and 203319 rows 
+X = data_for_model.iloc[:,:NUM_FEATURE]
+#get ten components of pca
+pca = PCA(n_components=10)
+pca.fit(X)
+X_reduced = pca.fit_transform(X)
+#X_reduced shape is [203319 rows x 10 columns]
+X = pd.DataFrame(X_reduced)
+#y [203319 rows * 2 columns]
+y = data_for_model.iloc[:,126:128]
+y.index = range(y.shape[0])
+# 203319 rows * 12 columns 
+data_for_model = pd.concat([X,y],axis=1)
+#split the data to training and testing 
+nrow = data_for_model.shape[0]
+nrow_train_validate = nrow * 3 / 4
+index = np.array([])
+index = np.append(index, np.random.choice(range(0, nrow), replace=False, size = nrow_train_validate))
+data_for_training = data_for_model.loc[index]
+index_test = set(range(0,nrow))-set(index)
+data_for_testing = data_for_model.loc[index_test]
+
+####prepare the dataset
+df = data_for_training
+#10 columns and 152489 rows
+X = df.iloc[:,:10]
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 #mid price movement 
-y_mid_price = df.iloc[:,NUM_FEATURE].values
+y_mid_price = df.iloc[:,10].values
 #spread crossing 
-#y_spread = df.iloc[:,NUM_FEATURE+1].values
-#y_spread = pd.DataFrame(y_spread)
-#y_spread.index = range(y_spread.shape[0])
+#y_spread = df.iloc[:,11].values
 
-testing_data = split_modeling_data(NUM_OF_TIME_STAMP_FOR_DERIV, 
-    NUM_OF_TIME_STAMP_FOR_RESPONSE)[1]
-testing_data = testing_data.dropna()
-testing_data_x = testing_data.iloc[:, :NUM_FEATURE]
+testing_data = data_for_testing
+testing_data_x = testing_data.iloc[:, :10]
 #get the testing data response, mid_price_movement, same index as y 
-#if it's spread crossing, index should be 127, instead of 126
-testing_data_y_mid = testing_data.iloc[:,NUM_FEATURE].values
+#if it's spread crossing, index should be +1
+testing_data_y_mid = testing_data.iloc[:,10].values
+#testing_data_y_spread = testing_data.iloc[:,11].values
 
 
 ### Modify mid price movement 
@@ -100,7 +125,7 @@ odd_ratio = np.exp(coef)
 
 
 print ("------------------------------------------------------------")
-print ("Result of Logistic Regression mid-price upward/non-upward")
+print ("Result of PCA, Logistic Regression mid-price upward/non-upward")
 print ("------------------------------------------------------------")
 print ("Overall Performace of Testing, upward")
 print (float(predict_correct)/predict_total)
@@ -179,7 +204,7 @@ odd_ratio = np.exp(coef)
 
 ###best result, due to less number of stationary
 print ("------------------------------------------------------------")
-print ("Result of Logistic Regression")
+print ("Result of PCA, Logistic Regression")
 print ("------------------------------------------------------------")
 print ("Overall Performace of Testing, mid-price, stationary/non-stationary")
 print (float(predict_correct)/predict_total)
@@ -257,7 +282,7 @@ odd_ratio = np.exp(coef)
 
 ###best result, due to less number of stationary
 print ("------------------------------------------------------------")
-print ("Result of Logistic Regression")
+print ("Result of PCA, Logistic Regression")
 print ("------------------------------------------------------------")
 print ("Overall Performace of Testing, mid-price, downwads/non-downwards")
 print (float(predict_correct)/predict_total)
